@@ -10,10 +10,25 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.22'
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
 }
 
-test {
-    useJUnitPlatform()
+java {
+    sourceCompatibility = JavaVersion.VERSION_14
+    targetCompatibility = JavaVersion.VERSION_14
+}
+
+jar {
+    archiveBaseName = "pungl"
+
+    manifest {
+        attributes "Main-Class" : "Main",
+                   "Project-Version" : project.getVersion(),
+                   "Java-Version" : java.targetCompatibility
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
