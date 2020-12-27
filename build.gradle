@@ -1,5 +1,4 @@
 import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 
 plugins {
     id 'java'
@@ -18,8 +17,8 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_14
-    targetCompatibility = JavaVersion.VERSION_14
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 jar {
@@ -60,10 +59,14 @@ task alias {
 
         // delete old alias from ~/.bashrc
         def deletePattern = "alias pungl*"
-        def deleteOldAlias = new ProcessBuilder().command("bash", "-c", "sed -i \'/$deletePattern/d\' ~/.bashrc").start()
+        def deleteOldAlias = new ProcessBuilder().command("bash", "-c", "sed -i \'/$deletePattern/d\' ~/.bashrc")
+                .start()
+                .waitFor()
 
         // add new alias to ~/.bashrc
         def alias = "alias pungl=\\\"java -jar $to\\\""
-        def addNewAlias = new ProcessBuilder().command("bash", "-c", "echo $alias >> ~/.bashrc").start()
+        def addNewAlias = new ProcessBuilder().command("bash", "-c", "echo $alias >> ~/.bashrc")
+                .start()
+                .waitFor()
     }
 }
