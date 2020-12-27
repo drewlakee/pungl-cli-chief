@@ -2,6 +2,7 @@ package processes;
 
 import org.apache.commons.cli.CommandLine;
 import processes.fibers.AbstractFiber;
+import processes.fibers.FiberType;
 
 public class DefaultProcess extends AbstractProcess {
 

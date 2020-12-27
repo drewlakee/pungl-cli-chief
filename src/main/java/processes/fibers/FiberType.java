@@ -1,4 +1,4 @@
-package processes;
+package processes.fibers;
 
 public enum FiberType {
     INTERMEDIATE,

@@ -1,7 +1,7 @@
 import org.apache.commons.cli.*;
 import processes.AbstractProcess;
 import processes.DefaultProcess;
-import processes.FiberType;
+import processes.fibers.FiberType;
 import processes.fibers.HelpFiber;
 import processes.fibers.PdfMergeFiber;
 

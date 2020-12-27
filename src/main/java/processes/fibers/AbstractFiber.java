@@ -2,7 +2,6 @@ package processes.fibers;
 
 import org.apache.commons.cli.CommandLine;
 import processes.AbstractProcess;
-import processes.FiberType;
 
 public abstract class AbstractFiber {
 
