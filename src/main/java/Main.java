@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
         CommandLine cmd = parse(args);
 
-        if (cmd.hasOption("h") || cmd.hasOption("help")) {
+        if (cmd.hasOption("h") || cmd.hasOption("help") || cmd.getArgs().length == 0) {
             System.out.println("Options: \n");
             for (Option option : options.getOptions()) {
                 String optionString = String.format("\t-%s, --%s \n\t%s\n", option.getOpt(), option.getLongOpt(), option.getDescription());

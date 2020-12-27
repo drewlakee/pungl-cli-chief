@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
 plugins {
     id 'java'
 }
@@ -30,5 +33,37 @@ jar {
 
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task alias {
+    dependsOn build
+    description = "Copy jar to specific directory and add app's alias to PATH"
+
+    doLast {
+        if (!System.getProperty("os.name").equals("Linux")) {
+            System.err.println "Operation System is not a Linux."
+            return
+        }
+
+        // create $HOME/bin directory, if doesn't exist
+        def env = System.getenv()
+        def binDir = new File(env.get("HOME") + "/bin")
+        if (!binDir.exists()) {
+            binDir.mkdir()
+        }
+
+        // copy jar to $HOME/bin directory
+        def from = jar.archiveFile.get().asFile.toPath()
+        def to = binDir.toString() + "/" + jar.archiveFile.get().asFile.getName()
+        Files.copy(from, new FileOutputStream(to))
+
+        // delete old alias from ~/.bashrc
+        def deletePattern = "alias pungl*"
+        def deleteOldAlias = new ProcessBuilder().command("bash", "-c", "sed -i \'/$deletePattern/d\' ~/.bashrc").start()
+
+        // add new alias to ~/.bashrc
+        def alias = "alias pungl=\\\"java -jar $to\\\""
+        def addNewAlias = new ProcessBuilder().command("bash", "-c", "echo $alias >> ~/.bashrc").start()
     }
 }
