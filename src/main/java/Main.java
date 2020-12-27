@@ -1,85 +1,33 @@
 import org.apache.commons.cli.*;
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import processes.AbstractProcess;
+import processes.DefaultProcess;
+import processes.FiberType;
+import processes.fibers.HelpFiber;
+import processes.fibers.PdfMergeFiber;
 
 public class Main {
 
-    private static Options options;
-
     public static void main(String[] args) {
-        CommandLine cmd = parse(args);
+        Options options = buildCliOptions();
+        CommandLine cli = parse(options, args);
+        AbstractProcess process = new DefaultProcess(cli);
 
-        if (cmd.hasOption("h") || cmd.hasOption("help") || cmd.getArgs().length == 0) {
-            System.out.println("Options: \n");
-            for (Option option : options.getOptions()) {
-                String optionString = String.format("\t-%s, --%s \n\t%s\n", option.getOpt(), option.getLongOpt(), option.getDescription());
-                System.out.println(optionString);
-            }
-
-            return;
+        if (cli.hasOption("h") || cli.hasOption("help") || cli.getOptions().length == 0) {
+            HelpFiber helpFiber = new HelpFiber(process, options);
+            process.addFiber(helpFiber);
         }
 
-        if (cmd.hasOption("m") || cmd.hasOption("merge")) {
-            List<String> mergeTargets = cmd.getArgList();
-
-            if (mergeTargets.isEmpty()) {
-                System.out.println("Command hasn't file arguments to merge");
-                return;
-            }
-
-            PDFMergerUtility mergerUtility = new PDFMergerUtility();
-            List<File> mergedFiles = new ArrayList<>();
-            for (String pathToTarget : mergeTargets) {
-                File target = new File(pathToTarget);
-                if (target.isFile()) {
-
-                    if (!target.getName().endsWith(".pdf")) {
-                        System.out.printf("%s file is not pdf", target.getName());
-                        return;
-                    }
-
-                    try {
-                        mergedFiles.add(target);
-                        mergerUtility.addSource(target);
-                        System.out.printf("%s merged%n", target);
-                    } catch (FileNotFoundException e) {
-                        if (cmd.hasOption("s") || cmd.hasOption("stacktrace")) {
-                            e.printStackTrace();
-                        } else {
-                            System.out.println("Merge process failed");
-                        }
-                    }
-                } else {
-                    System.out.println(String.format("%s is not file", pathToTarget));
-                    return;
-                }
-            }
-
-            mergerUtility.setDestinationFileName("merged-" + mergedFiles.get(0).getName());
-
-            try {
-                mergerUtility.mergeDocuments(null);
-            } catch (IOException e) {
-                if (cmd.hasOption("s") || cmd.hasOption("stacktrace")) {
-                    e.printStackTrace();
-                } else {
-                    System.out.println("Merge process failed");
-                }
-            }
-
-            return;
+        if (cli.hasOption("m") || cli.hasOption("merge")) {
+            PdfMergeFiber pdfMergeFiber = new PdfMergeFiber(process);
+            pdfMergeFiber.setFiberType(FiberType.INTERMEDIATE);
+            process.addFiber(pdfMergeFiber);
         }
+
+        process.execute();
     }
 
-    public static CommandLine parse(String[] arguments) {
+    public static CommandLine parse(Options options, String[] arguments) {
         CommandLineParser parser = new DefaultParser();
-
-        initCMDOptions();
 
         CommandLine cmd = null;
         try {
@@ -91,10 +39,11 @@ public class Main {
         return cmd;
     }
 
-    public static void initCMDOptions() {
-        options = new Options();
-        options.addOption("m", "merge", false, "Merge all input pdf files");
-        options.addOption("s", "stacktrace", false, "Show error stack traces");
-        options.addOption("h", "help", false, "Show options list");
+    public static Options buildCliOptions() {
+        Options options = new Options();
+        options.addOption("m", "merge", false, "\t\tMerge all input pdf files");
+        options.addOption("s", "stacktrace", false, "\tShow error stack traces");
+        options.addOption("h", "help", false, "\t\tShow options list");
+        return options;
     }
 }
