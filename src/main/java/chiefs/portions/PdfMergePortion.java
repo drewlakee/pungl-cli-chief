@@ -1,22 +1,22 @@
-package processes.fibers;
+package chiefs.portions;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
-import processes.AbstractProcess;
+import chiefs.AbstractChief;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PdfMergeFiber extends AbstractMergeFiber {
+public class PdfMergePortion extends AbstractMergePortion {
 
-    public PdfMergeFiber(AbstractProcess process) {
+    public PdfMergePortion(AbstractChief process) {
         super(process);
     }
 
     @Override
-    public void process(CommandLine cli) {
+    public void cook(CommandLine cli) {
         List<String> mergeTargets = cli.getArgList();
 
         if (mergeTargets.isEmpty()) {

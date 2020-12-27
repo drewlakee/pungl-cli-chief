@@ -1,29 +1,29 @@
 import org.apache.commons.cli.*;
-import processes.AbstractProcess;
-import processes.DefaultProcess;
-import processes.fibers.FiberType;
-import processes.fibers.HelpFiber;
-import processes.fibers.PdfMergeFiber;
+import chiefs.AbstractChief;
+import chiefs.DefaultChief;
+import chiefs.portions.PortionType;
+import chiefs.portions.HelpPortion;
+import chiefs.portions.PdfMergePortion;
 
-public class Main {
+public class Kitchen {
 
     public static void main(String[] args) {
         Options options = buildCliOptions();
         CommandLine cli = parse(options, args);
-        AbstractProcess process = new DefaultProcess(cli);
+        AbstractChief chief = new DefaultChief(cli);
 
         if (cli.hasOption("h") || cli.hasOption("help") || cli.getOptions().length == 0) {
-            HelpFiber helpFiber = new HelpFiber(process, options);
-            process.addFiber(helpFiber);
+            HelpPortion helpPortion = new HelpPortion(chief, options);
+            chief.addPortion(helpPortion);
         }
 
         if (cli.hasOption("m") || cli.hasOption("merge")) {
-            PdfMergeFiber pdfMergeFiber = new PdfMergeFiber(process);
-            pdfMergeFiber.setFiberType(FiberType.INTERMEDIATE);
-            process.addFiber(pdfMergeFiber);
+            PdfMergePortion pdfMergePortion = new PdfMergePortion(chief);
+            pdfMergePortion.setPortionType(PortionType.INTERMEDIATE);
+            chief.addPortion(pdfMergePortion);
         }
 
-        process.execute();
+        chief.work();
     }
 
     public static CommandLine parse(Options options, String[] arguments) {

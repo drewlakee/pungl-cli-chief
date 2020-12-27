@@ -25,7 +25,7 @@ jar {
     archiveBaseName = "pungl"
 
     manifest {
-        attributes "Main-Class" : "Main",
+        attributes "Main-Class" : "Kitchen",
                    "Project-Version" : project.getVersion(),
                    "Java-Version" : java.targetCompatibility
     }
