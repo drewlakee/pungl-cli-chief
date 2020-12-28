@@ -16,7 +16,7 @@ public class HelpPortion extends AbstractPortion {
 
     @Override
     public void cook(CommandLine cli) {
-        System.out.println("how to cook: [--help] [--merge] [--stacktrace] <command [command ...]> [<arguments>] \n");
+        System.out.println("how to cook: [--help] [--merge <--pdf>] [--stacktrace]\n\t<command [command ...]> [<arguments>] \n");
         for (Option option : options.getOptions()) {
             String optionString = String.format("\t-%s, --%s %s", option.getOpt(), option.getLongOpt(), option.getDescription());
             System.out.println(optionString);

@@ -1,3 +1,4 @@
+import chiefs.portions.AbstractMergePortion;
 import org.apache.commons.cli.*;
 import chiefs.AbstractChief;
 import chiefs.DefaultChief;
@@ -18,9 +19,16 @@ public class Kitchen {
         }
 
         if (cli.hasOption("m") || cli.hasOption("merge")) {
-            PdfMergePortion pdfMergePortion = new PdfMergePortion(chief);
-            pdfMergePortion.setPortionType(PortionType.INTERMEDIATE);
-            chief.addPortion(pdfMergePortion);
+            AbstractMergePortion mergePortion;
+
+            if (cli.hasOption("p") || cli.hasOption("pdf")) {
+                mergePortion = new PdfMergePortion(chief);
+            } else {
+                System.out.println("Files type to merge undefined");
+                return;
+            }
+
+            chief.addPortion(mergePortion);
         }
 
         chief.work();
@@ -42,6 +50,7 @@ public class Kitchen {
     public static Options buildCliOptions() {
         Options options = new Options();
         options.addOption("m", "merge", false, "\t\tMerge all input pdf files");
+        options.addOption("p", "pdf", false, "\t\tProcess pdf file type");
         options.addOption("s", "stacktrace", false, "\tShow error stack traces");
         options.addOption("h", "help", false, "\t\tShow options list");
         return options;

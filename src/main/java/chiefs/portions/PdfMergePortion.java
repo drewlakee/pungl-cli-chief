@@ -1,14 +1,12 @@
 package chiefs.portions;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.pdfbox.io.MemoryUsageSetting;
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import chiefs.AbstractChief;
+import org.apache.commons.cli.CommandLine;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
